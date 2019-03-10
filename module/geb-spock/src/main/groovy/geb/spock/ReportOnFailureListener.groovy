@@ -15,26 +15,26 @@
  */
 package geb.spock
 
+import org.spockframework.runtime.AbstractRunListener
+import org.spockframework.runtime.model.ErrorInfo
+import org.spockframework.runtime.model.FeatureInfo
 
-import org.spockframework.runtime.extension.IGlobalExtension
-import org.spockframework.runtime.model.SpecInfo
-
-class ReportingOnFailureExtension implements IGlobalExtension {
+class ReportOnFailureListener extends AbstractRunListener {
 
     @Override
-    void start() {
+    void beforeFeature(FeatureInfo feature) {
+        println "before feature listener called"
+
+    }
+    @Override
+    void afterFeature(FeatureInfo feature) {
+        println "after feature listener called"
+
     }
 
     @Override
-    void stop() {
-    }
+    void error(ErrorInfo error) {
+        println "error called"
 
-    void visitSpec(SpecInfo spec) {
-        if (GebReportingSpec.isAssignableFrom(spec.reflection)) {
-            spec.allFeatures*.featureMethod*.addInterceptor(new ReportOnFailureInterceptor())
-            spec.allFeatures*.addIterationInterceptor(new ReportOnFailureIterationInterceptor())
-            spec.addListener(new ReportOnFailureListener())
-            spec.addCleanupInterceptor(new ReportOnFailureCleanupInterceptor())
-        }
     }
 }

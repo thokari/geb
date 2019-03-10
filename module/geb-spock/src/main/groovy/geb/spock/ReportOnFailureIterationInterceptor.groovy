@@ -15,28 +15,20 @@
  */
 package geb.spock
 
-import org.spockframework.runtime.AbstractRunListener
 import org.spockframework.runtime.extension.IMethodInterceptor
 import org.spockframework.runtime.extension.IMethodInvocation
-import org.spockframework.runtime.model.ErrorInfo
 
-class OnFailureReporter extends AbstractRunListener implements IMethodInterceptor {
-
-    private GebReportingSpec spec
+class ReportOnFailureIterationInterceptor implements IMethodInterceptor {
 
     void intercept(IMethodInvocation invocation) throws Throwable {
-        spec = invocation.instance
-        invocation.proceed()
-    }
-
-    void error(ErrorInfo error) {
         try {
-            if (error) {
-                spec.reportFailure()
-            }
-        } catch (Exception e) {
-            //ignore
+            println "iteration interceptor called"
+            invocation.proceed()
+            println "iteration interceptor over"
+        } catch (Throwable failure) {
+            println "failure caught by iteration interceptor"
+            (invocation.instance as GebReportingSpec).reportFailure()
+            throw failure
         }
     }
-
 }

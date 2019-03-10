@@ -164,18 +164,22 @@ class GebReportingSpecSpec extends Specification {
     def "report is written after every failure when using @Retry with #mode"() {
         when:
         runReportingSpec """
+            @spock.lang.Shared currentTry = 1
+
             @Retry(count = 1, mode = $mode)
             def "failing test"() {
                 given:
+                println "current try: " + currentTry++
                 config.reportOnTestFailureOnly = true
                 go "/"
-
+                
                 expect:
                 false
             }
         """
 
         then:
+        println reportGroupDir.list()
         reportFileNumbers.every {
             reportFile("${it}-failing test-failure.html").exists()
         }

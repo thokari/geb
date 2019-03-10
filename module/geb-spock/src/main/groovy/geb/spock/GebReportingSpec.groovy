@@ -49,7 +49,7 @@ class GebReportingSpec extends GebSpec {
         if (_browser) {
             report "failure"
         } else {
-            System.err.println "Could not write report '${createReportLabel('failure')}', because the browser was already cleaned up. Consider using Spock's @Stepwise as a workaround."
+            System.err.println "Could not write report '${createReportLabel('failure')}', because browser was null."
         }
     }
 
@@ -58,6 +58,7 @@ class GebReportingSpec extends GebSpec {
     }
 
     String createReportLabel(String label = "") {
+        println "testCounter: $gebReportingSpecTestCounter, reportCounter: $gebReportingPerTestCounter"
         ReporterSupport.toTestReportLabel(gebReportingSpecTestCounter, gebReportingPerTestCounter++, gebReportingSpecTestName?.methodName ?: 'fixture', label)
     }
 
